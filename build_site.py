@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from datetime import datetime, timezone
 from collections import defaultdict
 
@@ -7,6 +8,10 @@ API_TOKEN = os.environ.get("FOOTBALL_DATA_API_TOKEN")
 STANDINGS_PATH = "standings.json"
 MATCHES_PATH = "matches.json"
 SCORERS_PATH = "scorers.json"
+PL_ASSISTS_PATH = "pl_assists.json"
+PL_YELLOW_CARDS_PATH = "pl_yellow_cards.json"
+PL_RED_CARDS_PATH = "pl_red_cards.json"
+PL_CLEAN_SHEETS_PATH = "pl_clean_sheets.json"
 OUT_PATH = "index.html"
 
 SAFETY_THRESHOLD = 38
@@ -23,6 +28,23 @@ finished = [m for m in matches_data["matches"] if m["status"] == "FINISHED"]
 
 scorers_data = json.load(open(SCORERS_PATH))
 scorers = scorers_data["scorers"]
+
+pl_assists_data = json.load(open(PL_ASSISTS_PATH))["data"]
+pl_yellow_cards_data = json.load(open(PL_YELLOW_CARDS_PATH))["data"]
+pl_red_cards_data = json.load(open(PL_RED_CARDS_PATH))["data"]
+pl_clean_sheets_data = json.load(open(PL_CLEAN_SHEETS_PATH))["data"]
+
+def _norm_team_name(name):
+    name = name.replace("&", "and")
+    name = re.sub(r"\b(FC|AFC)\b", "", name)
+    return re.sub(r"[^a-z0-9]", "", name.lower())
+
+crest_by_team_name = {
+    _norm_team_name(t["team"]["name"]): t["team"]["crest"] for t in table
+}
+
+def pl_team_crest(player):
+    return crest_by_team_name.get(_norm_team_name(player["playerMetadata"]["currentTeam"]["name"]), "")
 
 def zone_for(pos):
     if pos <= 4:
@@ -190,17 +212,46 @@ def player_row(s, highlight_field):
     </tr>"""
 
 by_goals = sorted(scorers, key=lambda s: (-(s.get("goals") or 0), -(s.get("assists") or 0)))
-by_assists = sorted(scorers, key=lambda s: (-(s.get("assists") or 0), -(s.get("goals") or 0)))
 by_involvements = sorted(scorers, key=lambda s: (-((s.get("goals") or 0) + (s.get("assists") or 0))))
 
-any_real_assists = any(s.get("assists") is not None for s in scorers)
-assists_data_note = "" if any_real_assists else """<div class="note">⚠ The data source hasn't started tracking assists yet this early in the season — every player currently shows "assists: none," so this list is really just sorted by goals as a fallback. It'll reflect real assist counts once the data catches up.</div>"""
-
 goals_rows = "".join(player_row(s, "goals") for s in by_goals)
-assists_rows = "".join(player_row(s, "assists") for s in by_assists)
 involvements_rows = "".join(player_row(s, "inv") for s in by_involvements)
 
 PLAYER_TABLE_HEAD = """<thead><tr><th class="team">Player</th><th>Club</th><th>Games</th><th>Goals</th><th>Assists</th><th>Goal Inv.</th><th>Pens</th><th>Goals/Game</th></tr></thead>"""
+
+# ---------- Single-stat lists from the Premier League's own public stats API ----------
+def pl_stat_table_head(label):
+    return f"""<thead><tr><th class="team">Player</th><th>Club</th><th>Games</th><th>{label}</th></tr></thead>"""
+
+def pl_stat_row(player, stat_key):
+    meta = player["playerMetadata"]
+    stats = player.get("stats") or {}
+    value = stats.get(stat_key)
+    if value is None:
+        return ""
+    games = stats.get("gamesPlayed") or stats.get("appearances") or 0
+    crest = pl_team_crest(player)
+    crest_html = f'<img src="{crest}" alt="" class="crest">' if crest else ""
+    return f"""
+    <tr>
+      <td class="team">{crest_html}{meta['name']}</td>
+      <td>{meta['currentTeam']['shortName']}</td>
+      <td>{int(games)}</td>
+      <td class="pts">{int(value)}</td>
+    </tr>"""
+
+ASSISTS_TABLE_HEAD = pl_stat_table_head("Assists")
+CARDS_TABLE_HEAD_Y = pl_stat_table_head("Yellow Cards")
+CARDS_TABLE_HEAD_R = pl_stat_table_head("Red Cards")
+CLEAN_SHEETS_TABLE_HEAD = pl_stat_table_head("Clean Sheets")
+
+pl_assists_rows = "".join(pl_stat_row(p, "goalAssists") for p in pl_assists_data) or "<tr><td colspan=4>No assist data yet</td></tr>"
+pl_yellow_rows = "".join(pl_stat_row(p, "yellowCards") for p in pl_yellow_cards_data) or "<tr><td colspan=4>No card data yet</td></tr>"
+pl_red_rows = "".join(pl_stat_row(p, "totalRedCards") for p in pl_red_cards_data) or "<tr><td colspan=4>No card data yet</td></tr>"
+
+pl_clean_sheet_players = [p for p in pl_clean_sheets_data if p["playerMetadata"].get("position") == "Goalkeeper" and p.get("stats")]
+pl_clean_sheet_players.sort(key=lambda p: -(p["stats"].get("cleanSheets") or 0))
+pl_clean_sheet_rows = "".join(pl_stat_row(p, "cleanSheets") for p in pl_clean_sheet_players[:10]) or "<tr><td colspan=4>No clean sheet data yet</td></tr>"
 
 updated = datetime.now(timezone.utc).strftime("%B %d, %Y %H:%M UTC")
 
@@ -399,8 +450,7 @@ html = f"""<!doctype html>
       <summary>Most Assists <span class="sub">Who's creating goals for others, not just scoring them</span></summary>
       <div class="accordion-body">
         <div class="explainer"><b>Assists</b> credit the pass (or occasionally the touch) that directly leads to a goal. It's the clearest single measure of creativity — a player can be hugely valuable to a team's attack without scoring much themselves.</div>
-        {assists_data_note}
-        <table>{PLAYER_TABLE_HEAD}<tbody>{assists_rows or "<tr><td colspan=8>No assist data yet</td></tr>"}</tbody></table>
+        <table>{ASSISTS_TABLE_HEAD}<tbody>{pl_assists_rows}</tbody></table>
       </div>
     </details>
 
@@ -412,10 +462,34 @@ html = f"""<!doctype html>
       </div>
     </details>
 
-    <div class="note">Also shown in each table: <b>Penalties</b> (shown separately since penalty goals are viewed differently from open-play ones), and <b>Goals/Game</b> (a rate stat, since raw totals favor players who've played more games). Not shown: shots, expected goals (xG), key passes, dribbles, tackles, or cards — the free data source used here only tracks goals, assists, penalties, and appearances.</div>
+    <div class="note">Also shown in each table: <b>Penalties</b> (shown separately since penalty goals are viewed differently from open-play ones), and <b>Goals/Game</b> (a rate stat, since raw totals favor players who've played more games). The combined table above and the Goals/Goal Involvements sections don't include real assist numbers (that data source doesn't track them) — see "Most Assists" below for real figures instead.</div>
+
+    <details class="stat-accordion">
+      <summary>Most Yellow Cards <span class="sub">Discipline — persistent fouling, five in a season triggers an automatic ban</span></summary>
+      <div class="accordion-body">
+        <div class="explainer">A <b>yellow card</b> is a caution for a foul or unsporting behavior. Two in one match means a red card and an early shower. Accumulate <b>5 yellows across the season's first 19 games</b> (or 10 by game 32) and the player serves an automatic one-match ban — so this list is also a rough guide to who's one bad tackle away from missing a game.</div>
+        <table>{CARDS_TABLE_HEAD_Y}<tbody>{pl_yellow_rows}</tbody></table>
+      </div>
+    </details>
+
+    <details class="stat-accordion">
+      <summary>Most Red Cards <span class="sub">Sent off — the rest of the match (and usually more) missed</span></summary>
+      <div class="accordion-body">
+        <div class="explainer">A <b>red card</b> means immediate ejection from the match, leaving the team to play the rest of the game a player short, plus an automatic suspension (typically 1-3 games depending on severity) for the next match(es). It's the most serious in-game discipline outcome.</div>
+        <table>{CARDS_TABLE_HEAD_R}<tbody>{pl_red_rows}</tbody></table>
+      </div>
+    </details>
+
+    <details class="stat-accordion">
+      <summary>Most Clean Sheets (Goalkeepers) <span class="sub">Individual keeper reliability, not just team defense</span></summary>
+      <div class="accordion-body">
+        <div class="explainer">This is the same <b>clean sheet</b> idea from the Club Stats tab, but credited to the individual <b>goalkeeper</b> who started those matches, rather than the team as a whole. It's the headline stat used to judge a keeper's season, alongside saves.</div>
+        <table>{CLEAN_SHEETS_TABLE_HEAD}<tbody>{pl_clean_sheet_rows}</tbody></table>
+      </div>
+    </details>
   </div>
 
-  <footer>Data: football-data.org · Rebuilt periodically, not live-updating</footer>
+  <footer>Data: football-data.org &amp; Premier League public stats API · Rebuilt periodically, not live-updating</footer>
 </div>
 <script>
 function showTab(name) {{
