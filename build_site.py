@@ -365,10 +365,26 @@ html = f"""<!doctype html>
 
   <div id="tab-player" class="tab-panel">
     <div class="explainer">
-      <b>New to the Premier League?</b> The <b>Golden Boot</b> (top scorer) is the most prestigious individual award in English football outside of Player of the Season. But goals alone don't capture everything a player contributes — click each section below to see the full list and what it means.
+      <b>New to the Premier League?</b> The <b>Golden Boot</b> (top scorer) is the most prestigious individual award in English football outside of Player of the Season. But goals alone don't capture everything a player contributes — this table adds context.
+    </div>
+    <div class="card">
+      <h2>Golden Boot Race &amp; Goal Involvements</h2>
+      <div class="explainer">
+        <b>Goals</b>: the headline number, and what decides the Golden Boot.<br>
+        <b>Assists</b>: the pass that directly leads to a goal — a measure of creativity, not just finishing.<br>
+        <b>Goal Involvements</b> (goals + assists): a fuller picture of a player's attacking output — a player with 8 goals and 10 assists is arguably more valuable than one with 12 goals and 0 assists.<br>
+        <b>Goals/Game</b>: raw totals favor players who've played more games — this rate stat levels the comparison.<br>
+        <b>Penalties</b>: shown separately since penalty goals are viewed differently from open-play goals (some fans discount them when judging a striker's true quality).
+      </div>
+      <table>{PLAYER_TABLE_HEAD}<tbody>{goals_rows or "<tr><td colspan=8>No scorer data yet</td></tr>"}</tbody></table>
+      <div class="note">Not shown: shots, expected goals (xG), key passes, dribbles, tackles, or cards — the free data source used here only tracks goals, assists, penalties, and appearances. Deeper stats (like xG) require a paid provider.</div>
     </div>
 
-    <details class="stat-accordion" open>
+    <div class="explainer" style="margin-top: 4px;">
+      <b>Want just one ranking at a time?</b> The sections below break the same data out individually, sorted by each specific stat.
+    </div>
+
+    <details class="stat-accordion">
       <summary>Most Goals <span class="sub">The Golden Boot race — decided by goals alone, nothing else</span></summary>
       <div class="accordion-body">
         <div class="explainer"><b>Goals</b> is the headline number and what the actual Golden Boot award is decided by. It's the most-watched individual stat in the league, but it rewards finishers over creators — see "Most Goals & Assists" below for the fuller picture.</div>
