@@ -1,9 +1,10 @@
 import json
+import os
 from datetime import datetime, timezone
 
 API_TOKEN = os.environ.get("FOOTBALL_DATA_API_TOKEN")
 STANDINGS_PATH = "standings.json"
-OUT_PATH = "site/index.html"
+OUT_PATH = "index.html"
 
 SAFETY_THRESHOLD = 38  # rough historical PL survival benchmark (points)
 TOTAL_GAMES = 38
@@ -258,8 +259,6 @@ html = f"""<!doctype html>
 </html>
 """
 
-import os
-os.makedirs("site", exist_ok=True)
 with open(OUT_PATH, "w") as f:
     f.write(html)
 print("wrote", OUT_PATH, len(html), "bytes")
