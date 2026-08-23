@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Premier League 2026-27 Tracker</title>
+<style>
+  :root {
+    --bg: #f6f1e7;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --border: #e2ddd0;
+    --cl: #d6f5d6;
+    --cl-text: #1a6b1a;
+    --el: #d6e8ff;
+    --el-text: #1a4a8a;
+    --ecl: #e0d6ff;
+    --ecl-text: #4a1a8a;
+    --rel: #ffd6d6;
+    --rel-text: #8a1a1a;
+    --accent: #37003c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16131a;
+      --card: #211d29;
+      --text: #f0ede4;
+      --muted: #a39d8f;
+      --border: #3a3444;
+      --cl: #143d14;
+      --cl-text: #8fe08f;
+      --el: #143355;
+      --el-text: #9cc4f5;
+      --ecl: #2e1a55;
+      --ecl-text: #c9b3f5;
+      --rel: #551a1a;
+      --rel-text: #f5a3a3;
+      --accent: #b494ff;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16131a;
+    --card: #211d29;
+    --text: #f0ede4;
+    --muted: #a39d8f;
+    --border: #3a3444;
+    --cl: #143d14;
+    --cl-text: #8fe08f;
+    --el: #143355;
+    --el-text: #9cc4f5;
+    --ecl: #2e1a55;
+    --ecl-text: #c9b3f5;
+    --rel: #551a1a;
+    --rel-text: #f5a3a3;
+    --accent: #b494ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px 16px 60px;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 4px; color: var(--accent); }
+  .updated { color: var(--muted); font-size: 0.85rem; margin-bottom: 24px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  h2 { font-size: 1.1rem; margin-top: 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.85rem; white-space: nowrap; }
+  th, td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+  td.team, th.team { text-align: left; }
+  .crest { width: 16px; height: 16px; vertical-align: middle; margin-right: 6px; }
+  .pos { font-weight: 700; }
+  .pts { font-weight: 700; }
+  tr.cl { background: var(--cl); color: var(--cl-text); }
+  tr.el { background: var(--el); color: var(--el-text); }
+  tr.ecl { background: var(--ecl); color: var(--ecl-text); }
+  tr.rel { background: var(--rel); color: var(--rel-text); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.78rem; margin-top: 10px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .dot.cl { background: var(--cl); }
+  .dot.el { background: var(--el); }
+  .dot.ecl { background: var(--ecl); }
+  .dot.rel { background: var(--rel); }
+  .note { color: var(--muted); font-size: 0.8rem; margin-top: 8px; }
+  footer { text-align: center; color: var(--muted); font-size: 0.75rem; margin-top: 30px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Premier League 2026-27 Tracker</h1>
+  <div class="updated">Matchday 1 · Last updated August 23, 2026 01:11 UTC</div>
+
+  <div class="card">
+    <h2>League Table</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th class="team">Team</th><th>P</th><th>W</th><th>D</th><th>L</th>
+          <th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Form</th>
+        </tr>
+      </thead>
+      <tbody>
+    <tr class="cl">
+      <td class="pos">1</td>
+      <td class="team"><img src="https://crests.football-data.org/57.png" alt="" class="crest"> Arsenal</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>+3</td>
+      <td class="pts">3</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="cl">
+      <td class="pos">1</td>
+      <td class="team"><img src="https://crests.football-data.org/402.png" alt="" class="crest"> Brentford</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>+3</td>
+      <td class="pts">3</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="cl">
+      <td class="pos">3</td>
+      <td class="team"><img src="https://crests.football-data.org/62.png" alt="" class="crest"> Everton</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>+2</td>
+      <td class="pts">3</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="cl">
+      <td class="pos">3</td>
+      <td class="team"><img src="https://crests.football-data.org/322.png" alt="" class="crest"> Hull City</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>+2</td>
+      <td class="pts">3</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="el">
+      <td class="pos">5</td>
+      <td class="team"><img src="https://crests.football-data.org/349.png" alt="" class="crest"> Ipswich Town</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
+      <td>+1</td>
+      <td class="pts">3</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="ecl">
+      <td class="pos">6</td>
+      <td class="team"><img src="https://crests.football-data.org/341.png" alt="" class="crest"> Leeds United</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>+1</td>
+      <td class="pts">3</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/bournemouth.png" alt="" class="crest"> Bournemouth</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/58.png" alt="" class="crest"> Aston Villa</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/397.png" alt="" class="crest"> Brighton Hove</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/61.png" alt="" class="crest"> Chelsea</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/63.png" alt="" class="crest"> Fulham</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/64.png" alt="" class="crest"> Liverpool</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/65.png" alt="" class="crest"> Man City</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/67.png" alt="" class="crest"> Newcastle</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">15</td>
+      <td class="team"><img src="https://crests.football-data.org/71.png" alt="" class="crest"> Sunderland</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>-1</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">16</td>
+      <td class="team"><img src="https://crests.football-data.org/351.png" alt="" class="crest"> Nottingham</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>-1</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">17</td>
+      <td class="team"><img src="https://crests.football-data.org/354.png" alt="" class="crest"> Crystal Palace</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>2</td>
+      <td>-2</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="">
+      <td class="pos">17</td>
+      <td class="team"><img src="https://crests.football-data.org/66.png" alt="" class="crest"> Man United</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>2</td>
+      <td>-2</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="rel">
+      <td class="pos">19</td>
+      <td class="team"><img src="https://crests.football-data.org/1076.png" alt="" class="crest"> Coventry City</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>-3</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+    <tr class="rel">
+      <td class="pos">19</td>
+      <td class="team"><img src="https://crests.football-data.org/73.png" alt="" class="crest"> Tottenham</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>-3</td>
+      <td class="pts">0</td>
+      <td class="form">—</td>
+    </tr>
+      </tbody>
+    </table>
+    <div class="legend">
+      <span><span class="dot cl"></span>Champions League (1-4)</span>
+      <span><span class="dot el"></span>Europa League (5)</span>
+      <span><span class="dot ecl"></span>Conference League (6)</span>
+      <span><span class="dot rel"></span>Relegation (18-20)</span>
+    </div>
+    <div class="note">European qualification spots can shift based on cup-competition winners (FA Cup, League Cup) already qualifying via league position — actual allocations are confirmed toward the end of the season.</div>
+  </div>
+
+  <div class="card">
+    <h2>European Race</h2>
+    <table>
+      <thead><tr><th>#</th><th class="team">Team</th><th>Zone</th><th>Pts</th><th>Games Left</th><th>Gap to 4th</th></tr></thead>
+      <tbody>
+    <tr class="cl">
+      <td class="pos">1</td>
+      <td class="team"><img src="https://crests.football-data.org/57.png" alt="" class="crest"> Arsenal</td>
+      <td>Champions League</td>
+      <td>3</td>
+      <td>37</td>
+      <td>—</td>
+    </tr>
+    <tr class="cl">
+      <td class="pos">1</td>
+      <td class="team"><img src="https://crests.football-data.org/402.png" alt="" class="crest"> Brentford</td>
+      <td>Champions League</td>
+      <td>3</td>
+      <td>37</td>
+      <td>—</td>
+    </tr>
+    <tr class="cl">
+      <td class="pos">3</td>
+      <td class="team"><img src="https://crests.football-data.org/62.png" alt="" class="crest"> Everton</td>
+      <td>Champions League</td>
+      <td>3</td>
+      <td>37</td>
+      <td>—</td>
+    </tr>
+    <tr class="cl">
+      <td class="pos">3</td>
+      <td class="team"><img src="https://crests.football-data.org/322.png" alt="" class="crest"> Hull City</td>
+      <td>Champions League</td>
+      <td>3</td>
+      <td>37</td>
+      <td>—</td>
+    </tr>
+    <tr class="el">
+      <td class="pos">5</td>
+      <td class="team"><img src="https://crests.football-data.org/349.png" alt="" class="crest"> Ipswich Town</td>
+      <td>Europa League</td>
+      <td>3</td>
+      <td>37</td>
+      <td>Level with 4th</td>
+    </tr>
+    <tr class="ecl">
+      <td class="pos">6</td>
+      <td class="team"><img src="https://crests.football-data.org/341.png" alt="" class="crest"> Leeds United</td>
+      <td>Conference League</td>
+      <td>3</td>
+      <td>37</td>
+      <td>Level with 4th</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/bournemouth.png" alt="" class="crest"> Bournemouth</td>
+      <td>Chasing pack</td>
+      <td>0</td>
+      <td>38</td>
+      <td>3 pt behind 4th</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/58.png" alt="" class="crest"> Aston Villa</td>
+      <td>Chasing pack</td>
+      <td>0</td>
+      <td>38</td>
+      <td>3 pt behind 4th</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/397.png" alt="" class="crest"> Brighton Hove</td>
+      <td>Chasing pack</td>
+      <td>0</td>
+      <td>38</td>
+      <td>3 pt behind 4th</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/61.png" alt="" class="crest"> Chelsea</td>
+      <td>Chasing pack</td>
+      <td>0</td>
+      <td>38</td>
+      <td>3 pt behind 4th</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/63.png" alt="" class="crest"> Fulham</td>
+      <td>Chasing pack</td>
+      <td>0</td>
+      <td>38</td>
+      <td>3 pt behind 4th</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/64.png" alt="" class="crest"> Liverpool</td>
+      <td>Chasing pack</td>
+      <td>0</td>
+      <td>38</td>
+      <td>3 pt behind 4th</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/65.png" alt="" class="crest"> Man City</td>
+      <td>Chasing pack</td>
+      <td>0</td>
+      <td>38</td>
+      <td>3 pt behind 4th</td>
+    </tr>
+    <tr class="">
+      <td class="pos">7</td>
+      <td class="team"><img src="https://crests.football-data.org/67.png" alt="" class="crest"> Newcastle</td>
+      <td>Chasing pack</td>
+      <td>0</td>
+      <td>38</td>
+      <td>3 pt behind 4th</td>
+    </tr></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Relegation Watch</h2>
+    <table>
+      <thead><tr><th>#</th><th class="team">Team</th><th>Pts</th><th>Games Left</th><th>What it takes to stay up</th></tr></thead>
+      <tbody>
+    <tr class="">
+      <td class="pos">15</td>
+      <td class="team"><img src="https://crests.football-data.org/71.png" alt="" class="crest"> Sunderland</td>
+      <td>0</td>
+      <td>37</td>
+      <td>Needs 38 pts from 37 games (1.03 pts/game — above current league-average pace)</td>
+    </tr>
+    <tr class="">
+      <td class="pos">16</td>
+      <td class="team"><img src="https://crests.football-data.org/351.png" alt="" class="crest"> Nottingham</td>
+      <td>0</td>
+      <td>37</td>
+      <td>Needs 38 pts from 37 games (1.03 pts/game — above current league-average pace)</td>
+    </tr>
+    <tr class="">
+      <td class="pos">17</td>
+      <td class="team"><img src="https://crests.football-data.org/354.png" alt="" class="crest"> Crystal Palace</td>
+      <td>0</td>
+      <td>37</td>
+      <td>Needs 38 pts from 37 games (1.03 pts/game — above current league-average pace)</td>
+    </tr>
+    <tr class="">
+      <td class="pos">17</td>
+      <td class="team"><img src="https://crests.football-data.org/66.png" alt="" class="crest"> Man United</td>
+      <td>0</td>
+      <td>37</td>
+      <td>Needs 38 pts from 37 games (1.03 pts/game — above current league-average pace)</td>
+    </tr>
+    <tr class="rel">
+      <td class="pos">19</td>
+      <td class="team"><img src="https://crests.football-data.org/1076.png" alt="" class="crest"> Coventry City</td>
+      <td>0</td>
+      <td>37</td>
+      <td>Needs 38 pts from 37 games (1.03 pts/game — above current league-average pace)</td>
+    </tr>
+    <tr class="rel">
+      <td class="pos">19</td>
+      <td class="team"><img src="https://crests.football-data.org/73.png" alt="" class="crest"> Tottenham</td>
+      <td>0</td>
+      <td>37</td>
+      <td>Needs 38 pts from 37 games (1.03 pts/game — above current league-average pace)</td>
+    </tr></tbody>
+    </table>
+    <div class="note">"Safety" modeled as ~38 points, a rough historical Premier League survival benchmark — the real cutoff varies year to year based on how bad the bottom teams are.</div>
+  </div>
+
+  <footer>Data: football-data.org · Rebuilt periodically, not live-updating</footer>
+</div>
+</body>
+</html>
