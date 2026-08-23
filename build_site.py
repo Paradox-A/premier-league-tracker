@@ -167,23 +167,37 @@ biggest_win_rows = "".join(f"<tr><td>{name}</td><td>{detail}</td></tr>" for _, n
 heaviest_loss_rows = "".join(f"<tr><td>{name}</td><td>{detail}</td></tr>" for _, name, detail in heaviest_losses) or "<tr><td colspan='2'>Not enough results yet</td></tr>"
 
 # ---------- Player stats from scorers ----------
-player_rows = []
-sorted_scorers = sorted(scorers, key=lambda s: (-(s.get("goals") or 0), -(s.get("assists") or 0)))
-for s in sorted_scorers:
+def player_row(s, highlight_field):
     goals = s.get("goals") or 0
-    assists = s.get("assists") or 0
-    pens = s.get("penalties") or 0
+    assists_raw = s.get("assists")
+    assists = assists_raw or 0
+    pens_raw = s.get("penalties")
+    pens = pens_raw or 0
     played = s.get("playedMatches") or 0
     involvements = goals + assists
     per_game = (goals/played) if played else 0
-    player_rows.append(f"""
+    cls = lambda f: "pts" if f == highlight_field else ""
+    return f"""
     <tr>
       <td class="team"><img src="{s['team']['crest']}" alt="" class="crest"> {s['player']['name']}</td>
       <td>{s['team']['shortName']}</td>
-      <td>{played}</td><td class="pts">{goals}</td><td>{assists if s.get('assists') is not None else '—'}</td>
-      <td>{involvements}</td><td>{pens if s.get('penalties') is not None else '—'}</td>
+      <td>{played}</td>
+      <td class="{cls('goals')}">{goals}</td>
+      <td class="{cls('assists')}">{assists if assists_raw is not None else '—'}</td>
+      <td class="{cls('inv')}">{involvements}</td>
+      <td>{pens if pens_raw is not None else '—'}</td>
       <td>{per_game:.2f}</td>
-    </tr>""")
+    </tr>"""
+
+by_goals = sorted(scorers, key=lambda s: (-(s.get("goals") or 0), -(s.get("assists") or 0)))
+by_assists = sorted(scorers, key=lambda s: (-(s.get("assists") or 0), -(s.get("goals") or 0)))
+by_involvements = sorted(scorers, key=lambda s: (-((s.get("goals") or 0) + (s.get("assists") or 0))))
+
+goals_rows = "".join(player_row(s, "goals") for s in by_goals)
+assists_rows = "".join(player_row(s, "assists") for s in by_assists)
+involvements_rows = "".join(player_row(s, "inv") for s in by_involvements)
+
+PLAYER_TABLE_HEAD = """<thead><tr><th class="team">Player</th><th>Club</th><th>Games</th><th>Goals</th><th>Assists</th><th>Goal Inv.</th><th>Pens</th><th>Goals/Game</th></tr></thead>"""
 
 updated = datetime.now(timezone.utc).strftime("%B %d, %Y %H:%M UTC")
 
@@ -249,6 +263,17 @@ html = f"""<!doctype html>
   .explainer {{ background: var(--tab-bg); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: var(--text); margin-bottom: 12px; line-height: 1.5; }}
   .explainer b {{ color: var(--accent); }}
   footer {{ text-align: center; color: var(--muted); font-size: 0.75rem; margin-top: 30px; }}
+  details.stat-accordion {{ border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }}
+  details.stat-accordion summary {{
+    cursor: pointer; padding: 14px 16px; font-weight: 700; font-size: 0.98rem;
+    list-style: none; display: flex; justify-content: space-between; align-items: center;
+    background: var(--card);
+  }}
+  details.stat-accordion summary::-webkit-details-marker {{ display: none; }}
+  details.stat-accordion summary::after {{ content: "+"; font-size: 1.2rem; color: var(--muted); }}
+  details.stat-accordion[open] summary::after {{ content: "−"; }}
+  details.stat-accordion summary .sub {{ font-weight: 400; font-size: 0.78rem; color: var(--muted); margin-top: 2px; display: block; }}
+  details.stat-accordion .accordion-body {{ padding: 0 16px 16px; }}
 </style>
 </head>
 <body>
@@ -340,23 +365,34 @@ html = f"""<!doctype html>
 
   <div id="tab-player" class="tab-panel">
     <div class="explainer">
-      <b>New to the Premier League?</b> The <b>Golden Boot</b> (top scorer) is the most prestigious individual award in English football outside of Player of the Season. But goals alone don't capture everything a player contributes — this table adds context.
+      <b>New to the Premier League?</b> The <b>Golden Boot</b> (top scorer) is the most prestigious individual award in English football outside of Player of the Season. But goals alone don't capture everything a player contributes — click each section below to see the full list and what it means.
     </div>
-    <div class="card">
-      <h2>Golden Boot Race &amp; Goal Involvements</h2>
-      <div class="explainer">
-        <b>Goals</b>: the headline number, and what decides the Golden Boot.<br>
-        <b>Assists</b>: the pass that directly leads to a goal — a measure of creativity, not just finishing.<br>
-        <b>Goal Involvements</b> (goals + assists): a fuller picture of a player's attacking output — a player with 8 goals and 10 assists is arguably more valuable than one with 12 goals and 0 assists.<br>
-        <b>Goals/Game</b>: raw totals favor players who've played more games — this rate stat levels the comparison.<br>
-        <b>Penalties</b>: shown separately since penalty goals are viewed differently from open-play goals (some fans discount them when judging a striker's true quality).
+
+    <details class="stat-accordion" open>
+      <summary>Most Goals <span class="sub">The Golden Boot race — decided by goals alone, nothing else</span></summary>
+      <div class="accordion-body">
+        <div class="explainer"><b>Goals</b> is the headline number and what the actual Golden Boot award is decided by. It's the most-watched individual stat in the league, but it rewards finishers over creators — see "Most Goals & Assists" below for the fuller picture.</div>
+        <table>{PLAYER_TABLE_HEAD}<tbody>{goals_rows or "<tr><td colspan=8>No scorer data yet</td></tr>"}</tbody></table>
       </div>
-      <table>
-        <thead><tr><th class="team">Player</th><th>Club</th><th>Games</th><th>Goals</th><th>Assists</th><th>Goal Inv.</th><th>Pens</th><th>Goals/Game</th></tr></thead>
-        <tbody>{"".join(player_rows) or "<tr><td colspan=8>No scorer data yet</td></tr>"}</tbody>
-      </table>
-      <div class="note">Not shown: shots, expected goals (xG), key passes, dribbles, tackles, or cards — the free data source used here only tracks goals, assists, penalties, and appearances. Deeper stats (like xG) require a paid provider.</div>
-    </div>
+    </details>
+
+    <details class="stat-accordion">
+      <summary>Most Assists <span class="sub">Who's creating goals for others, not just scoring them</span></summary>
+      <div class="accordion-body">
+        <div class="explainer"><b>Assists</b> credit the pass (or occasionally the touch) that directly leads to a goal. It's the clearest single measure of creativity — a player can be hugely valuable to a team's attack without scoring much themselves.</div>
+        <table>{PLAYER_TABLE_HEAD}<tbody>{assists_rows or "<tr><td colspan=8>No assist data yet</td></tr>"}</tbody></table>
+      </div>
+    </details>
+
+    <details class="stat-accordion">
+      <summary>Most Goals &amp; Assists <span class="sub">Total attacking output — often a better "who's actually best" ranking than goals alone</span></summary>
+      <div class="accordion-body">
+        <div class="explainer"><b>Goal Involvements</b> (goals + assists) gives a fuller picture of a player's attacking output than the Golden Boot table does on its own. A player with 8 goals and 10 assists has been directly involved in 18 goals — arguably more valuable to their team than someone with 12 goals and 0 assists, even though the latter would top the pure scoring chart.</div>
+        <table>{PLAYER_TABLE_HEAD}<tbody>{involvements_rows or "<tr><td colspan=8>No data yet</td></tr>"}</tbody></table>
+      </div>
+    </details>
+
+    <div class="note">Also shown in each table: <b>Penalties</b> (shown separately since penalty goals are viewed differently from open-play ones), and <b>Goals/Game</b> (a rate stat, since raw totals favor players who've played more games). Not shown: shots, expected goals (xG), key passes, dribbles, tackles, or cards — the free data source used here only tracks goals, assists, penalties, and appearances.</div>
   </div>
 
   <footer>Data: football-data.org · Rebuilt periodically, not live-updating</footer>
