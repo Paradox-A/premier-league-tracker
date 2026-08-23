@@ -193,6 +193,9 @@ by_goals = sorted(scorers, key=lambda s: (-(s.get("goals") or 0), -(s.get("assis
 by_assists = sorted(scorers, key=lambda s: (-(s.get("assists") or 0), -(s.get("goals") or 0)))
 by_involvements = sorted(scorers, key=lambda s: (-((s.get("goals") or 0) + (s.get("assists") or 0))))
 
+any_real_assists = any(s.get("assists") is not None for s in scorers)
+assists_data_note = "" if any_real_assists else """<div class="note">⚠ The data source hasn't started tracking assists yet this early in the season — every player currently shows "assists: none," so this list is really just sorted by goals as a fallback. It'll reflect real assist counts once the data catches up.</div>"""
+
 goals_rows = "".join(player_row(s, "goals") for s in by_goals)
 assists_rows = "".join(player_row(s, "assists") for s in by_assists)
 involvements_rows = "".join(player_row(s, "inv") for s in by_involvements)
@@ -396,6 +399,7 @@ html = f"""<!doctype html>
       <summary>Most Assists <span class="sub">Who's creating goals for others, not just scoring them</span></summary>
       <div class="accordion-body">
         <div class="explainer"><b>Assists</b> credit the pass (or occasionally the touch) that directly leads to a goal. It's the clearest single measure of creativity — a player can be hugely valuable to a team's attack without scoring much themselves.</div>
+        {assists_data_note}
         <table>{PLAYER_TABLE_HEAD}<tbody>{assists_rows or "<tr><td colspan=8>No assist data yet</td></tr>"}</tbody></table>
       </div>
     </details>
